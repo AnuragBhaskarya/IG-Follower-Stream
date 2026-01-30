@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+followers.txt
+log.txt
+.DS_Store
+.idea/
+.vscode/
