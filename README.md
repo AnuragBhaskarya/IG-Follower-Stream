@@ -79,7 +79,7 @@ pip install PyQt5 requests
 Open `core/config.py` and change the value:
 
 ```python
-INSTAGRAM_USERNAME = "arijitsingh"  # <--- Replace with your target username
+INSTAGRAM_USERNAME = "ishowspeed"  # <--- Replace with your target username
 ```
 
 ### 3. Run the Tracker
