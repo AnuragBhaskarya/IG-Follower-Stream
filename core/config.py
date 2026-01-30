@@ -21,7 +21,7 @@ AUDIO_LOST = os.path.join(AUDIO_DIR, "lost.mp3")
 # ---------------------------
 # Tracker Settings
 # ---------------------------
-INSTAGRAM_USERNAME = "arijitsingh"
+INSTAGRAM_USERNAME = "ishowspeed"
 CHECK_INTERVAL = 1        # seconds between each check
 RETRY_INTERVAL = 5        # seconds to wait on error
 AUDIO_OVERLAY_DELAY = 1 # seconds before voice plays after intro
