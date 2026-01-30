@@ -188,7 +188,7 @@ class StrokedTextLabel(QWidget):
 class StreamingNotification(QWidget):
     """Streaming-style transparent notification with stroked text."""
     
-    def __init__(self, line1_segments, line2_segments, is_gain: bool = True):
+    def __init__(self, line1_segments, line2_segments, is_gain: bool = True, gif_path: str = None):
         self.app = QApplication.instance()
         if not self.app:
             self.app = QApplication(sys.argv)
@@ -197,6 +197,7 @@ class StreamingNotification(QWidget):
         self.line1_segments = line1_segments
         self.line2_segments = line2_segments
         self.is_gain = is_gain
+        self.gif_path = gif_path
         self.movie = None
         self.setup_ui()
         self.setup_animations()
@@ -223,7 +224,8 @@ class StreamingNotification(QWidget):
         self.char_label.setAlignment(Qt.AlignCenter)
         self.char_label.setStyleSheet("background: transparent;")
         
-        gif_path = get_random_gif(self.is_gain)
+        # Use provided path or fallback (though path should be provided by caller now)
+        gif_path = self.gif_path if self.gif_path else get_random_gif(self.is_gain)
         
         if gif_path and gif_path.endswith('.gif'):
             self.movie = QMovie(gif_path)
@@ -309,7 +311,7 @@ class StreamingNotification(QWidget):
         self.close_timer.start(NOTIFICATION_DURATION)
 
 
-def show_streaming_notification(message: str, is_gain: bool = True) -> None:
+def show_streaming_notification(message: str, is_gain: bool = True, gif_path: str = None) -> None:
     """Shows streaming-style notification with stroked text."""
     import subprocess
     import json
@@ -357,7 +359,7 @@ line1_segments = [(t, color_map[c]) for t, c in line1]
 line2_segments = [(t, color_map[c]) for t, c in line2]
 
 app = QApplication(sys.argv)
-notif = StreamingNotification(line1_segments, line2_segments, {is_gain})
+notif = StreamingNotification(line1_segments, line2_segments, {is_gain}, "{gif_path}")
 notif.show_notification()
 
 # Connect to closed signal to quit app

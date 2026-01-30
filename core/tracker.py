@@ -14,6 +14,7 @@ from .logger import logger
 from .storage import read_stored_followers, write_followers
 from .network import is_connected, wait_for_internet
 from .notifications import send_notification
+from .notification_streaming import get_random_gif
 from .audio import play_gain_audio, play_loss_audio
 
 
@@ -75,7 +76,11 @@ def run_tracker(
                 unit = "follower" if diff == 1 else "followers"
                 message = f"You got {diff} {unit}. Total: {new_count}"
                 logger.info(message)
-                send_notification(message, is_gain=True)
+                
+                # Get GIF here to ensure we track last used (since tracker process persists)
+                gif_path = get_random_gif(is_gain=True)
+                send_notification(message, is_gain=True, gif_path=gif_path)
+                
                 play_gain_audio(diff)
                 stored_count = new_count
                 write_followers(stored_count)
@@ -86,7 +91,11 @@ def run_tracker(
                 unit = "follower" if drop == 1 else "followers"
                 message = f"You lost {drop} {unit}. Total: {new_count}"
                 logger.info(message)
-                send_notification(message, is_gain=False)
+                
+                # Get GIF here to ensure we track last used
+                gif_path = get_random_gif(is_gain=False)
+                send_notification(message, is_gain=False, gif_path=gif_path)
+                
                 play_loss_audio(drop)
                 stored_count = new_count
                 write_followers(stored_count)

@@ -10,7 +10,7 @@ from .logger import logger
 USE_STREAMING = True
 
 
-def send_notification(message: str, title: str = "Instagram Followers", is_gain: bool = True) -> None:
+def send_notification(message: str, title: str = "Instagram Followers", is_gain: bool = True, gif_path: str = None) -> None:
     """
     Sends a desktop notification.
     Uses streaming-style overlay if enabled.
@@ -18,7 +18,7 @@ def send_notification(message: str, title: str = "Instagram Followers", is_gain:
     if USE_STREAMING:
         try:
             from .notification_streaming import show_streaming_notification
-            show_streaming_notification(message, is_gain)
+            show_streaming_notification(message, is_gain, gif_path)
             return
         except Exception as e:
             logger.warning(f"Streaming notification failed: {e}")
