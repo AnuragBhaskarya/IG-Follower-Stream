@@ -5,39 +5,14 @@ Plays intro jingle, then voice announcement after delay.
 
 import os
 import subprocess
-import random
 import time
 import threading
-from typing import Dict
 
 from .config import (
-    AUDIO_GET, AUDIO_LOST, AUDIO_DIRS_GAIN, AUDIO_DIRS_LOSS,
+    AUDIO_GET, AUDIO_LOST, GENERATED_AUDIO_DIR,
     AUDIO_OVERLAY_DELAY
 )
 from .logger import logger
-
-# Track last played file to avoid repetition
-last_played_gain: Dict[str, str] = {}
-last_played_loss: Dict[str, str] = {}
-
-
-def get_random_audio(folder_path: str, category_key: str, last_played_dict: dict) -> str:
-    """Selects a random MP3 file from folder, avoiding last played."""
-    try:
-        if not os.path.exists(folder_path):
-            logger.warning(f"Audio folder not found: {folder_path}")
-            return ""
-        files = [f for f in os.listdir(folder_path) if f.endswith('.mp3')]
-        if not files:
-            return ""
-        if category_key in last_played_dict and last_played_dict[category_key] in files and len(files) > 1:
-            files.remove(last_played_dict[category_key])
-        selected = random.choice(files)
-        last_played_dict[category_key] = selected
-        return os.path.join(folder_path, selected)
-    except Exception as e:
-        logger.error(f"Error selecting random audio from {folder_path}: {e}")
-        return ""
 
 
 def play_audio(audio_path: str) -> None:
@@ -67,42 +42,47 @@ def play_audio_with_overlay(intro_path: str, voice_path: str, delay: float = AUD
         threading.Thread(target=delayed_voice, daemon=True).start()
 
 
-def get_gain_category(diff: int):
-    """Determines the audio category based on follower gain amount."""
-    if diff <= 10:
-        return diff
-    elif diff <= 100:
-        return "more_than_10"
-    elif diff <= 500:
-        return "more_than_100"
-    elif diff <= 1000:
-        return "more_than_500"
-    elif diff <= 2000:
-        return "more_than_1000"
-    elif diff <= 5000:
-        return "more_than_2000"
-    else:
-        return "more_than_5000"
-
-
 def play_gain_audio(diff: int) -> None:
     """Plays gain audio with get.mp3 intro overlay."""
-    category = get_gain_category(diff)
+    voice_file = ""
     
-    if category in AUDIO_DIRS_GAIN:
-        folder = AUDIO_DIRS_GAIN[category]
-        voice_audio = get_random_audio(folder, str(category), last_played_gain)
-        play_audio_with_overlay(AUDIO_GET, voice_audio)
+    if diff <= 100:
+        # Specific file 1-100
+        path = os.path.join(GENERATED_AUDIO_DIR, "gain", f"{diff}.wav")
+        if os.path.exists(path):
+            voice_file = path
+    elif diff <= 1000:
+        # Milestones 100-1000 (step 100)
+        milestone = (diff // 100) * 100
+        path = os.path.join(GENERATED_AUDIO_DIR, "gain", f"more_than_{milestone}.wav")
+        if os.path.exists(path):
+            voice_file = path
+    else:
+        # Milestones 1000-10000 (step 1000)
+        milestone = (diff // 1000) * 1000
+        if milestone > 10000:
+            milestone = 10000
+        path = os.path.join(GENERATED_AUDIO_DIR, "gain", f"more_than_{milestone}.wav")
+        if os.path.exists(path):
+            voice_file = path
+    
+    # Play intro with overlay
+    play_audio_with_overlay(AUDIO_GET, voice_file)
 
 
 def play_loss_audio(diff: int) -> None:
     """Plays loss audio with lost.mp3 intro overlay."""
-    # Get voice audio if available for 1-2 losses
-    voice_audio = ""
-    if diff in AUDIO_DIRS_LOSS:
-        folder = AUDIO_DIRS_LOSS[diff]
-        voice_audio = get_random_audio(folder, str(diff), last_played_loss)
+    voice_file = ""
+    
+    # Check for specific number file
+    specific_file = os.path.join(GENERATED_AUDIO_DIR, "loss", f"{diff}.wav")
+    over_file = os.path.join(GENERATED_AUDIO_DIR, "loss", "over_100.wav")
+    
+    if os.path.exists(specific_file):
+        voice_file = specific_file
+    elif diff > 100 and os.path.exists(over_file):
+        voice_file = over_file
     
     # Always play intro, with or without voice
-    play_audio_with_overlay(AUDIO_LOST, voice_audio)
+    play_audio_with_overlay(AUDIO_LOST, voice_file)
 

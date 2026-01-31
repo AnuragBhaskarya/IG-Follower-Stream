@@ -21,7 +21,6 @@ A real-time Instagram follower tracking system with **desktop notifications**, *
 
 ## 📁 Project Structure
 
-```
 followers_tracker/
 ├── core/                   # Core modules
 │   ├── config.py           # All configuration settings
@@ -37,6 +36,10 @@ followers_tracker/
 │   ├── blastup.py          # Blastup API
 │   └── lightricks.py       # Lightricks API
 │
+├── scripts/                # Utility scripts
+│   ├── generate_voices.py  # ⚡ Fast generation (standard quality)
+│   └── generate_voices_hq.py # 🎧 High-Quality generation (50 decode steps)
+│
 ├── assets/                 # Visual assets
 │   ├── gain/               # 📂 Put gain GIFs here (random selection)
 │   ├── loss/               # 📂 Put loss GIFs here (random selection)
@@ -45,15 +48,9 @@ followers_tracker/
 │   └── font.ttf/.otf       # Custom font (optional)
 │
 ├── audio/                  # Audio files
+│   ├── generated/          # 📂 Generated TTS voice files (do not edit manually)
 │   ├── get.mp3             # Intro sound for gains
-│   ├── lost.mp3            # Intro sound for losses
-│   ├── gain/               # Voice announcements for gains
-│   │   ├── 1/              # "You got 1 follower" audio files
-│   │   ├── 2/              # "You got 2 followers" audio files
-│   │   └── ...             # And so on...
-│   └── lost/               # Voice announcements for losses
-│       ├── 1/
-│       └── 2/
+│   └── lost.mp3            # Intro sound for losses
 │
 ├── run_instastatistics.py  # 🚀 Main entry point (recommended)
 ├── run_blastup.py          # Alternative: Blastup API
@@ -156,14 +153,22 @@ NOTIF_LINE_SPACING = 1             # Line spacing (lower = tighter)
 
 ### Audio Customization
 
-Add `.mp3` files to the appropriate folders:
+The system now uses **Dynamic TTS** (Text-to-Speech). You don't need to manually add files!
 
-```
-audio/gain/1/   → Random audio for gaining 1 follower
-audio/gain/2/   → Random audio for gaining 2 followers
-audio/gain/more_than_10/  → For gains of 11+
-audio/gain/more_than_100/ → For gains of 100+
-```
+**To generate/update voices:**
+
+1.  **High Quality (Recommended)**:
+    ```bash
+    python3 scripts/generate_voices_hq.py
+    ```
+
+2.  **Standard Speed**:
+    ```bash
+    python3 scripts/generate_voices.py
+    ```
+
+**To change the voice:**
+Edit the `scripts/generate_voices_hq.py` file and change `SELECTED_VOICE` to one of: `"marius"`, `"alba"`, `"jean"`, `"fantine"`, `"cosette"`, `"eponine"`, `"azelma"`.
 
 ---
 
