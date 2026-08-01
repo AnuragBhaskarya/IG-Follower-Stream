@@ -15,7 +15,7 @@ A real-time Instagram follower tracking system with **desktop notifications**, *
 - 🎵 **Audio Alerts** — Custom voice announcements for gains/losses
 - 🎬 **Animated GIFs** — Random GIF selection from folders (no consecutive repeats!)
 - 🎨 **Fully Customizable** — Fonts, sizes, positions, colors - all configurable
-- 🔌 **Multiple APIs** — Support for InstaStatistics, Blastup, and Lightricks
+- 🔌 **Stable Tracking** — Powered by InstaStatistics
 
 ---
 
@@ -32,9 +32,7 @@ followers_tracker/
 │   └── logger.py           # Logging configuration
 │
 ├── apis/                   # API implementations
-│   ├── instastatistics.py  # InstaStatistics API (recommended)
-│   ├── blastup.py          # Blastup API
-│   └── lightricks.py       # Lightricks API
+│   └── instastatistics.py  # InstaStatistics API
 │
 ├── scripts/                # Utility scripts
 │   ├── generate_voices.py  # ⚡ Fast generation (standard quality)
@@ -52,9 +50,7 @@ followers_tracker/
 │   ├── get.mp3             # Intro sound for gains
 │   └── lost.mp3            # Intro sound for losses
 │
-├── run_instastatistics.py  # 🚀 Main entry point (recommended)
-├── run_blastup.py          # Alternative: Blastup API
-├── run_lightricks.py       # Alternative: Lightricks API
+├── run_instastatistics.py  # 🚀 Main entry point
 ├── followers.txt           # Stored follower count
 └── log.txt                 # Activity logs
 ```
@@ -172,25 +168,14 @@ Edit the `scripts/generate_voices_hq.py` file and change `SELECTED_VOICE` to one
 
 ---
 
-## 🔌 API Options
+## 🔌 Usage
 
-### InstaStatistics (Recommended)
 ```bash
 python3 run_instastatistics.py
 ```
 - ✅ Fast (2-second cache)
 - ✅ Reliable
 - ✅ No authentication needed
-
-### Blastup
-```bash
-python3 run_blastup.py
-```
-
-### Lightricks
-```bash
-python3 run_lightricks.py
-```
 
 ---
 
